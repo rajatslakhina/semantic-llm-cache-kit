@@ -59,6 +59,7 @@ The cache is checked *before* the budget on purpose: cache hits are free, so a f
 - **Mid-flight duplicate registration race** → structurally impossible: check-then-register is synchronous inside the gateway actor, and budget authorization runs *inside* the flight task so it cannot reopen the race.
 - **Slow completion vs. successor flight** → deregistration is identity-checked; a stale completion can never evict its successor's registration.
 - **Relaunch** → versioned snapshot restore drops expired entries, respects capacity warmest-first, and discards wholesale on schema mismatch.
+- **Hung generator (operational note)** → a `ResponseGenerator` that never returns holds its budget reservation until the process ends; this is inherent to any reserve/settle design, so conforming clients are expected to enforce their own timeouts and throw. The bundled simulation always completes.
 
 ## What the simulation is (honestly)
 
